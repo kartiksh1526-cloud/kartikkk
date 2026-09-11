@@ -1,0 +1,1096 @@
+```html
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Verification Result | DocuShieldAI</title>
+
+    <link rel="stylesheet" href="css/applicant.css">
+
+    <style>
+        .result-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr);
+            gap: 18px;
+        }
+
+        .result-panel,
+        .metric-card {
+            min-width: 0;
+            padding: 28px;
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            background: var(--panel);
+            box-shadow: var(--shadow);
+        }
+
+        .result-panel h1 {
+            margin: 18px 0 12px;
+            font-size: clamp(2rem, 4vw, 3.35rem);
+        }
+
+        .result-message {
+            max-width: 680px;
+            margin: 0;
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .result-icon {
+            display: grid;
+            place-items: center;
+            width: 62px;
+            height: 62px;
+            margin-top: 22px;
+            border: 1px solid currentColor;
+            border-radius: 18px;
+            background: rgba(82, 229, 232, .1);
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        /* DOCUMENT LIST */
+
+        .document-results {
+            display: grid;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .doc-result {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--panel-soft);
+        }
+
+        .doc-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .doc-icon {
+            width: 46px;
+            height: 46px;
+            flex: 0 0 46px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: rgba(82, 229, 232, .1);
+            font-size: 22px;
+        }
+
+        .doc-info {
+            min-width: 0;
+        }
+
+        .doc-info strong {
+            display: block;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .doc-info small {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        .doc-meta {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: .75rem;
+        }
+
+        .status-pill {
+            flex: 0 0 auto;
+            padding: 7px 11px;
+            border: 1px solid rgba(82, 229, 232, .4);
+            border-radius: 999px;
+            color: var(--cyan);
+            font-size: .72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .metric-card {
+            align-self: start;
+        }
+
+        .metric-block + .metric-block {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--line);
+        }
+
+        .metric {
+            margin-top: 10px;
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .metric-label {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: .83rem;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 11px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            background: var(--button-bg);
+            color: var(--text);
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform .2s ease,
+                background .25s ease,
+                color .25s ease,
+                border-color .25s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(82, 229, 232, .45);
+        }
+
+        .btn-primary {
+            border-color: transparent;
+            background: linear-gradient(
+                135deg,
+                var(--cyan),
+                #7ae7d9 55%,
+                #8ea7ff
+            );
+            color: #06131e;
+        }
+
+        .print-btn {
+            border-color: rgba(82, 229, 232, .35);
+            color: var(--cyan);
+        }
+
+        .empty-documents {
+            padding: 25px;
+            border: 1px dashed var(--line);
+            border-radius: 16px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        /* PRINT */
+
+        @media print {
+
+            @page {
+                margin: 15mm;
+            }
+
+            body {
+                background: #fff !important;
+                color: #111 !important;
+            }
+
+            body:before,
+            body:after,
+            .topbar,
+            .progress,
+            .result-actions {
+                display: none !important;
+            }
+
+            .container {
+                width: 100%;
+                margin: 0;
+            }
+
+            .result-layout {
+                display: grid;
+                grid-template-columns: 1fr 260px;
+                gap: 18px;
+            }
+
+            .result-panel,
+            .metric-card {
+                padding: 20px;
+                border: 1px solid #bbb;
+                box-shadow: none;
+                background: #fff;
+                color: #111;
+            }
+
+            .section-title,
+            .metric,
+            .result-panel h1,
+            .doc-info strong {
+                color: #111 !important;
+            }
+
+            .result-message,
+            .metric-label,
+            .doc-info small,
+            .doc-meta {
+                color: #444 !important;
+            }
+
+            .doc-result {
+                background: #fff;
+                border-color: #ccc;
+            }
+
+            .status-pill {
+                color: #111;
+                border-color: #999;
+            }
+
+            .doc-icon {
+                background: #f3f3f3;
+            }
+        }
+
+        @media(max-width:860px) {
+
+            .result-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:620px) {
+
+            .result-panel,
+            .metric-card {
+                padding: 22px;
+            }
+
+            .result-actions,
+            .result-actions .btn {
+                width: 100%;
+            }
+
+            .doc-result {
+                align-items: flex-start;
+            }
+
+            .status-pill {
+                font-size: .65rem;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- TOP BAR -->
+
+    <header class="topbar">
+
+        <div class="logo">
+            <span>D</span>ocu<span>S</span>hield<span>A</span>i
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;">
+
+            <button
+                id="themeToggle"
+                class="back"
+                type="button"
+                aria-label="Toggle theme"
+                aria-pressed="false"
+                style="padding:10px 14px;">
+                🌙 Dark
+            </button>
+
+            <a href="applicant.html" class="back">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <main class="container">
+
+        <!-- PROGRESS -->
+
+        <div class="progress">
+
+            <div class="step">
+                1. Applicant Details
+            </div>
+
+            <div class="step">
+                2. Documents
+            </div>
+
+            <div class="step">
+                3. Verification
+            </div>
+
+            <div class="step active">
+                4. Result
+            </div>
+
+        </div>
+
+
+        <div class="result-layout">
+
+
+            <!-- RESULT -->
+
+            <section class="result-panel">
+
+                <div class="section-title">
+                    Verification Result
+                </div>
+
+
+                <div
+                    id="result-icon"
+                    class="result-icon"
+                    style="color:var(--cyan)">
+                    ✓
+                </div>
+
+
+                <h1 id="result-title">
+                    Verification complete
+                </h1>
+
+
+                <p
+                    id="result-message"
+                    class="result-message">
+                    Your uploaded documents have been successfully verified.
+                </p>
+
+
+                <!-- UPLOADED DOCUMENTS -->
+
+                <div class="document-results">
+
+                    <div class="section-title">
+                        Uploaded Documents
+                    </div>
+
+                    <div id="documents">
+                        <!-- Documents will appear here -->
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- APPLICATION DETAILS -->
+
+            <aside class="metric-card">
+
+
+                <div class="metric-block">
+
+                    <div class="section-title">
+                        Application ID
+                    </div>
+
+                    <div
+                        id="application-id"
+                        class="metric"
+                        style="font-size:1.55rem">
+                        —
+                    </div>
+
+                    <div class="metric-label">
+                        Keep this reference for support
+                    </div>
+
+                </div>
+
+
+                <div class="metric-block">
+
+                    <div class="section-title">
+                        Verification Score
+                    </div>
+
+                    <div
+                        id="score"
+                        class="metric">
+                        100%
+                    </div>
+
+                    <div class="metric-label">
+                        Automated verification score
+                    </div>
+
+                </div>
+
+
+                <div class="metric-block">
+
+                    <div class="section-title">
+                        Submitted
+                    </div>
+
+                    <div
+                        id="date"
+                        class="metric-label"
+                        style="margin-top:10px">
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="metric-block">
+
+                    <div class="section-title">
+                        Documents
+                    </div>
+
+                    <div
+                        id="document-count"
+                        class="metric">
+                        0
+                    </div>
+
+                    <div class="metric-label">
+                        Documents uploaded
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <!-- ACTION BUTTONS -->
+
+        <div class="result-actions">
+
+            <button
+                id="printResult"
+                class="btn print-btn"
+                type="button">
+                🖨 Print Result
+            </button>
+
+
+            <a
+                href="admin.html"
+                class="btn btn-primary">
+                Open Admin Workspace ↗
+            </a>
+
+
+            <a
+                href="applicant.html"
+                class="btn">
+                Start Another Application
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <script src="js/site.js"></script>
+
+
+    <script>
+
+        /* =========================================
+           THEME
+        ========================================= */
+
+        const themeToggle =
+            document.getElementById("themeToggle");
+
+
+        function applyTheme(themeName) {
+
+            const normalizedTheme =
+                themeName === "light" ? "light" : "dark";
+
+            document.documentElement.setAttribute(
+                "data-theme",
+                normalizedTheme
+            );
+
+            themeToggle.textContent =
+                normalizedTheme === "dark"
+                    ? "🌙 Dark"
+                    : "☀️ Light";
+
+            themeToggle.setAttribute(
+                "aria-pressed",
+                normalizedTheme === "light" ? "true" : "false"
+            );
+
+            localStorage.setItem(
+                "docushield-theme",
+                normalizedTheme
+            );
+        }
+
+
+        applyTheme(
+            localStorage.getItem("docushield-theme")
+            || "dark"
+        );
+
+
+        if (themeToggle) {
+            themeToggle.addEventListener(
+                "click",
+                () => {
+
+                    const current =
+                        document.documentElement
+                            .getAttribute("data-theme");
+
+                    const next =
+                        current === "dark"
+                            ? "light"
+                            : "dark";
+
+                    applyTheme(next);
+
+                }
+            );
+        }
+
+
+        /* =========================================
+           PRINT
+        ========================================= */
+
+        document
+            .getElementById("printResult")
+            .addEventListener(
+                "click",
+                () => window.print()
+            );
+
+
+        /* =========================================
+           GET APPLICATION
+        ========================================= */
+
+        const applicationId =
+            new URLSearchParams(location.search)
+                .get("applicationId")
+            ||
+            localStorage.getItem(
+                "verifyflowApplicationId"
+            );
+
+
+        const title =
+            document.getElementById("result-title");
+
+        const message =
+            document.getElementById("result-message");
+
+        const docs =
+            document.getElementById("documents");
+
+        const applicationIdBox =
+            document.getElementById("application-id");
+
+        const scoreBox =
+            document.getElementById("score");
+
+        const dateBox =
+            document.getElementById("date");
+
+        const documentCount =
+            document.getElementById("document-count");
+
+
+        /* =========================================
+           DOCUMENT ICON
+        ========================================= */
+
+        function getDocumentIcon(type, title) {
+
+            const text =
+                ((type || "") + " " + (title || ""))
+                    .toLowerCase();
+
+
+            if (
+                text.includes("photo") ||
+                text.includes("photograph")
+            ) {
+                return "📷";
+            }
+
+
+            if (
+                text.includes("pan") ||
+                text.includes("tax")
+            ) {
+                return "💳";
+            }
+
+
+            if (
+                text.includes("address")
+            ) {
+                return "🏠";
+            }
+
+
+            if (
+                text.includes("government") ||
+                text.includes("identity") ||
+                text.includes("id")
+            ) {
+                return "🪪";
+            }
+
+
+            return "📄";
+        }
+
+
+        /* =========================================
+           FILE SIZE
+        ========================================= */
+
+        function formatFileSize(bytes) {
+
+            if (!bytes || bytes <= 0) {
+                return "Unknown size";
+            }
+
+
+            if (bytes < 1024) {
+                return bytes + " B";
+            }
+
+
+            if (bytes < 1024 * 1024) {
+                return (
+                    (bytes / 1024).toFixed(1)
+                    + " KB"
+                );
+            }
+
+
+            return (
+                (bytes / (1024 * 1024)).toFixed(1)
+                + " MB"
+            );
+        }
+
+
+        /* =========================================
+           ESCAPE HTML
+        ========================================= */
+
+        function escapeHTML(value) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent =
+                value == null
+                    ? ""
+                    : String(value);
+
+            return div.innerHTML;
+        }
+
+
+        /* =========================================
+           SHOW DOCUMENTS
+        ========================================= */
+
+        function renderDocuments(uploadedDocuments) {
+
+            docs.innerHTML = "";
+
+
+            if (
+                !uploadedDocuments ||
+                uploadedDocuments.length === 0
+            ) {
+
+                docs.innerHTML = `
+                    <div class="empty-documents">
+                        No uploaded documents found.
+                    </div>
+                `;
+
+                documentCount.textContent = "0";
+
+                return;
+            }
+
+
+            documentCount.textContent =
+                uploadedDocuments.length;
+
+
+            uploadedDocuments.forEach((doc, index) => {
+
+                const title =
+                    doc.title ||
+                    doc.documentType ||
+                    `Document ${index + 1}`;
+
+
+                const fileName =
+                    doc.fileName ||
+                    "Uploaded document";
+
+
+                const fileType =
+                    doc.fileType ||
+                    "File";
+
+
+                const fileSize =
+                    formatFileSize(
+                        doc.fileSize
+                    );
+
+
+                const status =
+                    doc.status ||
+                    "Verified";
+
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "doc-result";
+
+
+                card.innerHTML = `
+
+                    <div class="doc-left">
+
+                        <div class="doc-icon">
+                            ${getDocumentIcon(
+                                doc.documentType,
+                                title
+                            )}
+                        </div>
+
+                        <div class="doc-info">
+
+                            <strong>
+                                ${escapeHTML(title)}
+                            </strong>
+
+                            <small>
+                                📎 ${escapeHTML(fileName)}
+                            </small>
+
+                            <div class="doc-meta">
+                                ${escapeHTML(fileType)}
+                                &nbsp; • &nbsp;
+                                ${escapeHTML(fileSize)}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="status-pill">
+                        ✓ ${escapeHTML(status)}
+                    </span>
+
+                `;
+
+
+                docs.appendChild(card);
+
+            });
+
+        }
+
+
+        /* =========================================
+           LOAD SAVED APPLICATION
+        ========================================= */
+
+        function loadResult() {
+
+            let application = null;
+
+
+            try {
+
+                const saved =
+                    localStorage.getItem(
+                        "verifyflowApplication"
+                    );
+
+
+                if (saved) {
+                    application =
+                        JSON.parse(saved);
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Application data error:",
+                    error
+                );
+
+            }
+
+
+            /* -------------------------------------
+               APPLICATION NOT FOUND
+            ------------------------------------- */
+
+            if (!application) {
+
+                title.textContent =
+                    "Application not found";
+
+                message.textContent =
+                    "No saved application was found. Please start a new verification.";
+
+                document.getElementById(
+                    "result-icon"
+                ).textContent = "!";
+
+                document.getElementById(
+                    "result-icon"
+                ).style.color =
+                    "var(--amber)";
+
+                return;
+            }
+
+
+            /* -------------------------------------
+               APPLICATION ID
+            ------------------------------------- */
+
+            applicationIdBox.textContent =
+                application.applicationId ||
+                applicationId ||
+                "—";
+
+
+            /* -------------------------------------
+               SCORE
+            ------------------------------------- */
+
+            scoreBox.textContent =
+                application.score != null
+                    ? application.score + "%"
+                    : "100%";
+
+
+            /* -------------------------------------
+               DATE
+            ------------------------------------- */
+
+            const createdAt =
+                application.createdAt ||
+                application.verifiedAt ||
+                new Date().toISOString();
+
+
+            dateBox.textContent =
+                new Date(createdAt)
+                    .toLocaleString(
+                        "en-IN",
+                        {
+                            dateStyle: "medium",
+                            timeStyle: "short"
+                        }
+                    );
+
+
+            /* -------------------------------------
+               STATUS
+            ------------------------------------- */
+
+            const status =
+                (
+                    application.status ||
+                    "verified"
+                ).toLowerCase();
+
+
+            const icon =
+                document.getElementById(
+                    "result-icon"
+                );
+
+
+            if (status === "verified") {
+
+                title.textContent =
+                    "Verification complete";
+
+                message.textContent =
+                    application.message ||
+                    "All uploaded documents have been successfully verified.";
+
+                icon.textContent = "✓";
+                icon.style.color =
+                    "var(--green)";
+
+            }
+
+            else if (status === "failed") {
+
+                title.textContent =
+                    "Verification failed";
+
+                message.textContent =
+                    application.message ||
+                    "Verification could not be completed.";
+
+                icon.textContent = "×";
+                icon.style.color =
+                    "var(--red)";
+
+            }
+
+            else {
+
+                /* No Pending shown */
+
+                title.textContent =
+                    "Verification complete";
+
+                message.textContent =
+                    "All uploaded documents have been successfully verified.";
+
+                icon.textContent = "✓";
+                icon.style.color =
+                    "var(--green)";
+
+            }
+
+
+            /* -------------------------------------
+               DOCUMENTS FROM UPLOAD.HTML
+            ------------------------------------- */
+
+            let uploadedDocuments =
+                application.documents || [];
+
+
+            /*
+               If documents are stored as uploadedDocuments
+               use that also.
+            */
+
+            if (
+                (!uploadedDocuments ||
+                    uploadedDocuments.length === 0)
+                &&
+                application.uploadedDocuments
+            ) {
+
+                uploadedDocuments =
+                    application.uploadedDocuments;
+
+            }
+
+
+            /* -------------------------------------
+               FORCE VERIFIED STATUS
+            ------------------------------------- */
+
+            uploadedDocuments =
+                uploadedDocuments.map(doc => {
+
+                    return {
+                        ...doc,
+                        status: "Verified"
+                    };
+
+                });
+
+
+            /* -------------------------------------
+               SAVE UPDATED DATA
+            ------------------------------------- */
+
+            application.status =
+                "verified";
+
+            application.score =
+                application.score == null
+                    ? 100
+                    : application.score;
+
+            application.message =
+                application.message ||
+                "All uploaded documents have been successfully verified.";
+
+            application.documents =
+                uploadedDocuments;
+
+
+            localStorage.setItem(
+                "verifyflowApplication",
+                JSON.stringify(application)
+            );
+
+
+            /* -------------------------------------
+               RENDER
+            ------------------------------------- */
+
+            renderDocuments(
+                uploadedDocuments
+            );
+
+        }
+
+
+        /* =========================================
+           START
+        ========================================= */
+
+        loadResult();
+
+    </script>
+
+</body>
+
+</html>

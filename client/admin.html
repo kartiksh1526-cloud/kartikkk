@@ -1,0 +1,2562 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>VerifyFlow | Admin Dashboard</title>
+
+<link rel="stylesheet" href="css/applicant.css">
+
+<style>
+
+:root{
+--admin-bg:#08111f;
+--admin-sidebar:#0b1728;
+--admin-panel:#101f34;
+--admin-soft:#0c1726;
+--admin-line:rgba(159,190,225,.18);
+--admin-text:#f4f8ff;
+--admin-muted:#9aacc2;
+--cyan:#52e5e8;
+--green:#65e6ad;
+--red:#ff7c91;
+--amber:#f5c66a;
+--shadow:0 24px 80px rgba(0,0,0,.25);
+}
+
+:root[data-theme="light"]{
+--admin-bg:#edf4ff;
+--admin-sidebar:#fff;
+--admin-panel:#fff;
+--admin-soft:#f1f6ff;
+--admin-line:rgba(24,53,94,.13);
+--admin-text:#091827;
+--admin-muted:#4f6482;
+--cyan:#087d7d;
+--green:#1a9d69;
+--red:#d5495d;
+--amber:#ba7a08;
+--shadow:0 20px 60px rgba(15,31,50,.12);
+}
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+min-height:100vh;
+background:var(--admin-bg);
+color:var(--admin-text);
+font-family:Arial,Helvetica,sans-serif;
+}
+
+button,input,select,textarea{
+font:inherit;
+}
+
+button{
+cursor:pointer;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:250px;
+padding:25px 16px;
+background:var(--admin-sidebar);
+border-right:1px solid var(--admin-line);
+z-index:10;
+}
+
+.logo{
+padding:0 10px 25px;
+border-bottom:1px solid var(--admin-line);
+font-size:1.4rem;
+font-weight:800;
+}
+
+.logo span{
+color:var(--cyan);
+}
+
+.menu{
+list-style:none;
+padding:0;
+margin:25px 0;
+display:grid;
+gap:7px;
+}
+
+.menu a{
+display:block;
+padding:12px 14px;
+border:1px solid transparent;
+border-radius:12px;
+color:var(--admin-muted);
+text-decoration:none;
+font-weight:700;
+}
+
+.menu a:hover,
+.menu a.active{
+background:rgba(82,229,232,.1);
+border-color:rgba(82,229,232,.25);
+color:var(--admin-text);
+}
+
+.theme-row{
+position:absolute;
+left:16px;
+right:16px;
+bottom:20px;
+}
+
+.theme-toggle{
+width:100%;
+padding:11px;
+border:1px solid var(--admin-line);
+border-radius:11px;
+background:var(--admin-soft);
+color:var(--admin-text);
+font-weight:700;
+}
+
+.main{
+margin-left:250px;
+padding:35px clamp(20px,4vw,55px) 60px;
+}
+
+.topbar{
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+gap:20px;
+margin-bottom:25px;
+}
+
+.topbar h1{
+margin:0;
+font-size:clamp(2rem,4vw,3rem);
+}
+
+.topbar p{
+margin:8px 0 0;
+color:var(--admin-muted);
+}
+
+.admin-info{
+padding:11px 15px;
+border:1px solid var(--admin-line);
+border-radius:12px;
+background:var(--admin-panel);
+}
+
+/* STATS */
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-bottom:20px;
+}
+
+.stat{
+padding:20px;
+border:1px solid var(--admin-line);
+border-radius:18px;
+background:var(--admin-panel);
+box-shadow:var(--shadow);
+}
+
+.stat-label{
+color:var(--admin-muted);
+font-size:.78rem;
+font-weight:700;
+text-transform:uppercase;
+}
+
+.stat-number{
+margin-top:8px;
+font-size:2rem;
+font-weight:800;
+}
+
+/* SEARCH */
+
+.search-box{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+padding:20px;
+margin-bottom:20px;
+border:1px solid var(--admin-line);
+border-radius:18px;
+background:var(--admin-panel);
+}
+
+.search-box input,
+.search-box select{
+padding:13px 14px;
+border:1px solid var(--admin-line);
+border-radius:11px;
+background:var(--admin-soft);
+color:var(--admin-text);
+outline:none;
+}
+
+.search-box input{
+flex:1;
+min-width:240px;
+}
+
+.search-box select{
+min-width:160px;
+}
+
+.btn{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:11px 16px;
+border:1px solid var(--admin-line);
+border-radius:11px;
+background:var(--admin-soft);
+color:var(--admin-text);
+font-weight:800;
+}
+
+.btn-primary{
+border-color:transparent;
+background:linear-gradient(
+135deg,
+var(--cyan),
+#7ae7d9 55%,
+#8ea7ff
+);
+color:#06131e;
+}
+
+.btn-success{
+color:var(--green);
+background:rgba(101,230,173,.12);
+border-color:rgba(101,230,173,.3);
+}
+
+.btn-danger{
+color:var(--red);
+background:rgba(255,124,145,.12);
+border-color:rgba(255,124,145,.3);
+}
+
+.btn:hover{
+transform:translateY(-1px);
+}
+
+/* APPLICATION LIST */
+
+.application-list{
+display:grid;
+gap:15px;
+}
+
+.application-card{
+padding:20px;
+border:1px solid var(--admin-line);
+border-radius:18px;
+background:var(--admin-panel);
+box-shadow:var(--shadow);
+}
+
+.application-header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:15px;
+flex-wrap:wrap;
+}
+
+.applicant-title{
+display:flex;
+align-items:center;
+gap:13px;
+}
+
+.avatar{
+display:grid;
+place-items:center;
+width:52px;
+height:52px;
+border-radius:15px;
+background:rgba(82,229,232,.1);
+color:var(--cyan);
+font-weight:800;
+font-size:1.15rem;
+}
+
+.applicant-title h2{
+margin:0;
+font-size:1.15rem;
+}
+
+.application-id{
+margin-top:4px;
+color:var(--admin-muted);
+font-size:.75rem;
+font-family:monospace;
+}
+
+.status{
+display:inline-flex;
+padding:7px 12px;
+border-radius:999px;
+font-size:.7rem;
+font-weight:800;
+text-transform:uppercase;
+}
+
+.status.verified{
+color:var(--green);
+background:rgba(101,230,173,.12);
+border:1px solid rgba(101,230,173,.3);
+}
+
+.status.pending{
+color:var(--amber);
+background:rgba(245,198,106,.12);
+border:1px solid rgba(245,198,106,.3);
+}
+
+.status.rejected{
+color:var(--red);
+background:rgba(255,124,145,.12);
+border:1px solid rgba(255,124,145,.3);
+}
+
+.details-grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+margin-top:20px;
+padding-top:20px;
+border-top:1px solid var(--admin-line);
+}
+
+.detail{
+padding:12px;
+border:1px solid var(--admin-line);
+border-radius:11px;
+background:var(--admin-soft);
+}
+
+.detail label{
+display:block;
+margin-bottom:4px;
+color:var(--admin-muted);
+font-size:.68rem;
+font-weight:800;
+text-transform:uppercase;
+}
+
+.detail strong{
+font-size:.84rem;
+overflow-wrap:anywhere;
+}
+
+.application-actions{
+display:flex;
+gap:9px;
+flex-wrap:wrap;
+margin-top:18px;
+}
+
+.documents-preview{
+display:none;
+margin-top:20px;
+padding-top:20px;
+border-top:1px solid var(--admin-line);
+}
+
+.documents-preview.show{
+display:block;
+}
+
+.documents-preview h3{
+margin:0 0 14px;
+}
+
+.document-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.document-card{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+padding:14px;
+border:1px solid var(--admin-line);
+border-radius:13px;
+background:var(--admin-soft);
+}
+
+.document-info{
+display:flex;
+align-items:center;
+gap:10px;
+min-width:0;
+}
+
+.file-icon{
+display:grid;
+place-items:center;
+width:40px;
+height:40px;
+flex:0 0 40px;
+border-radius:10px;
+background:rgba(82,229,232,.1);
+}
+
+.file-details{
+min-width:0;
+}
+
+.file-details strong{
+display:block;
+font-size:.82rem;
+}
+
+.file-details small{
+display:block;
+margin-top:4px;
+color:var(--admin-muted);
+overflow-wrap:anywhere;
+font-size:.72rem;
+}
+
+.doc-status{
+padding:6px 9px;
+border-radius:999px;
+font-size:.65rem;
+font-weight:800;
+white-space:nowrap;
+}
+
+.doc-status.verified{
+color:var(--green);
+background:rgba(101,230,173,.1);
+}
+
+.doc-status.rejected{
+color:var(--red);
+background:rgba(255,124,145,.1);
+}
+
+.doc-status.pending{
+color:var(--amber);
+background:rgba(245,198,106,.1);
+}
+
+.empty{
+padding:45px 20px;
+border:1px dashed var(--admin-line);
+border-radius:18px;
+text-align:center;
+color:var(--admin-muted);
+}
+
+/* MODAL */
+
+.modal{
+position:fixed;
+inset:0;
+display:none;
+place-items:center;
+padding:20px;
+background:rgba(0,0,0,.75);
+z-index:100;
+}
+
+.modal.active{
+display:grid;
+}
+
+.modal-content{
+width:min(850px,100%);
+max-height:90vh;
+overflow:auto;
+padding:25px;
+border:1px solid var(--admin-line);
+border-radius:20px;
+background:var(--admin-panel);
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.close{
+font-size:28px;
+cursor:pointer;
+color:var(--admin-muted);
+}
+
+.modal-details{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.modal-detail{
+padding:13px;
+border:1px solid var(--admin-line);
+border-radius:11px;
+background:var(--admin-soft);
+}
+
+.modal-detail label{
+display:block;
+font-size:.7rem;
+color:var(--admin-muted);
+margin-bottom:4px;
+}
+
+.modal-detail strong{
+overflow-wrap:anywhere;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+
+.details-grid{
+grid-template-columns:repeat(3,1fr);
+}
+
+}
+
+@media(max-width:800px){
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.main{
+margin-left:0;
+padding-top:25px;
+}
+
+.menu{
+display:flex;
+overflow-x:auto;
+}
+
+.theme-row{
+position:static;
+margin-top:15px;
+}
+
+.details-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.document-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:550px){
+
+.stats{
+grid-template-columns:1fr 1fr;
+}
+
+.details-grid,
+.modal-details{
+grid-template-columns:1fr;
+}
+
+.search-box input,
+.search-box select,
+.search-box .btn{
+width:100%;
+}
+
+.application-actions .btn{
+width:100%;
+}
+
+}
+
+@media print{
+
+.sidebar,
+.topbar,
+.stats,
+.search-box,
+.application-actions,
+.documents-preview button{
+display:none!important;
+}
+
+.main{
+margin:0;
+padding:0;
+}
+
+.application-card{
+box-shadow:none;
+break-inside:avoid;
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<div class="logo">
+Verify<span>Flow</span>
+</div>
+
+<ul class="menu">
+
+<li>
+<a href="#" class="active">
+📊 Dashboard
+</a>
+</li>
+
+<li>
+<a href="#applications">
+👥 All Applications
+</a>
+</li>
+
+<li>
+<a href="#applications">
+📄 Documents
+</a>
+</li>
+
+<li>
+<a href="#applications">
+✅ Verified
+</a>
+</li>
+
+<li>
+<a href="#applications">
+❌ Rejected
+</a>
+</li>
+
+</ul>
+
+<div class="theme-row">
+
+<button
+id="themeToggle"
+class="theme-toggle"
+type="button"
+aria-label="Toggle theme"
+aria-pressed="false">
+🌙 Dark
+</button>
+
+</div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+<header class="topbar">
+
+<div>
+
+<h1>
+Document Verification
+</h1>
+
+<p>
+All submitted applications & uploaded documents
+</p>
+
+</div>
+
+<div class="admin-info">
+👨‍💼 <strong>Admin</strong>
+</div>
+
+</header>
+
+
+<!-- STATS -->
+
+<section class="stats">
+
+<div class="stat">
+
+<div class="stat-label">
+Total Applications
+</div>
+
+<div
+id="totalApplications"
+class="stat-number">
+0
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-label">
+Verified
+</div>
+
+<div
+id="verifiedApplications"
+class="stat-number"
+style="color:var(--green)">
+0
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-label">
+Pending
+</div>
+
+<div
+id="pendingApplications"
+class="stat-number"
+style="color:var(--amber)">
+0
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-label">
+Rejected
+</div>
+
+<div
+id="rejectedApplications"
+class="stat-number"
+style="color:var(--red)">
+0
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SEARCH -->
+
+<section class="search-box">
+
+<input
+id="searchInput"
+type="text"
+placeholder="Search applicant name, email, mobile or Application ID...">
+
+<select id="statusFilter">
+
+<option value="all">
+All Status
+</option>
+
+<option value="verified">
+Verified
+</option>
+
+<option value="pending">
+Pending
+</option>
+
+<option value="rejected">
+Rejected
+</option>
+
+</select>
+
+
+<button
+class="btn btn-primary"
+onclick="renderApplications()">
+🔍 Search
+</button>
+
+
+<button
+class="btn"
+onclick="clearSearch()">
+Clear
+</button>
+
+</section>
+
+
+<!-- APPLICATIONS -->
+
+<section id="applications">
+
+<div
+id="applicationList"
+class="application-list">
+</div>
+
+</section>
+
+
+</main>
+
+
+<!-- APPLICANT MODAL -->
+
+<div
+id="applicantModal"
+class="modal">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h2>
+Applicant Details
+</h2>
+
+<span
+class="close"
+onclick="closeModal()">
+×
+</span>
+
+</div>
+
+<div
+id="modalDetails"
+class="modal-details">
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+THEME
+========================================= */
+
+const themeToggle =
+document.getElementById("themeToggle");
+
+
+function applyTheme(theme){
+
+const normalizedTheme =
+theme === "light" ? "light" : "dark";
+
+document.documentElement
+.setAttribute("data-theme",normalizedTheme);
+
+themeToggle.textContent =
+normalizedTheme === "dark"
+? "🌙 Dark"
+: "☀️ Light";
+
+themeToggle.setAttribute(
+"aria-pressed",
+normalizedTheme === "light" ? "true" : "false"
+);
+
+localStorage.setItem(
+"docushield-theme",
+normalizedTheme
+);
+
+}
+
+
+applyTheme(
+localStorage.getItem("docushield-theme")
+|| "dark"
+);
+
+
+if(themeToggle){
+
+themeToggle.addEventListener(
+"click",
+()=>{
+
+const current =
+document.documentElement
+.getAttribute("data-theme");
+
+applyTheme(
+current === "dark"
+? "light"
+: "dark"
+);
+
+});
+
+}
+
+
+/* =========================================
+GET ALL APPLICATIONS
+========================================= */
+
+function getApplications(){
+
+let applications = [];
+
+
+/*
+Main history array
+*/
+
+try{
+
+const history =
+JSON.parse(
+localStorage.getItem(
+"verifyflowApplications"
+) || "[]"
+);
+
+if(Array.isArray(history)){
+applications = history;
+}
+
+}catch(error){
+
+applications=[];
+
+}
+
+
+/*
+Current application ko bhi check karo
+*/
+
+try{
+
+const current =
+JSON.parse(
+localStorage.getItem(
+"verifyflowApplication"
+) || "null"
+);
+
+
+if(current){
+
+const exists =
+applications.some(
+app =>
+app.applicationId ===
+current.applicationId
+);
+
+
+if(!exists){
+
+applications.push(current);
+
+}
+
+}
+
+}catch(error){
+
+console.log(error);
+
+}
+
+
+/*
+Latest first
+*/
+
+ applications.sort(
+ (a,b)=>
+ new Date(
+ b.createdAt || b.submittedAt || 0
+ ) -
+ new Date(
+ a.createdAt || a.submittedAt || 0
+ )
+ );
+
+
+return applications;
+
+}
+
+
+/* =========================================
+SAVE ALL
+========================================= */
+
+function saveApplications(applications){
+
+localStorage.setItem(
+"verifyflowApplications",
+JSON.stringify(
+applications
+)
+);
+
+}
+
+
+/* =========================================
+ESCAPE
+========================================= */
+
+function escapeHTML(value){
+
+const div =
+document.createElement("div");
+
+div.textContent =
+value == null
+? ""
+: String(value);
+
+return div.innerHTML;
+
+}
+
+
+/* =========================================
+DATE
+========================================= */
+
+function formatDate(date){
+
+if(!date){
+return "—";
+}
+
+try{
+
+return new Date(date)
+.toLocaleString(
+"en-IN",
+{
+dateStyle:"medium",
+timeStyle:"short"
+}
+);
+
+}catch(error){
+
+return "—";
+
+}
+
+}
+
+
+/* =========================================
+FILE SIZE
+========================================= */
+
+function formatSize(bytes){
+
+if(!bytes){
+return "—";
+}
+
+if(bytes < 1024){
+
+return bytes+" B";
+
+}
+
+if(bytes < 1024*1024){
+
+return (
+(bytes/1024)
+.toFixed(1)
++" KB"
+);
+
+}
+
+return (
+(bytes/(1024*1024))
+.toFixed(1)
++" MB"
+);
+
+}
+
+
+/* =========================================
+STATUS
+========================================= */
+
+function normalizeStatus(status){
+
+status =
+(status || "pending")
+.toLowerCase();
+
+
+if(status === "verified"){
+return "verified";
+}
+
+if(status === "rejected"){
+return "rejected";
+}
+
+return "pending";
+
+}
+
+
+/* =========================================
+INITIALS
+========================================= */
+
+function getInitials(name){
+
+if(!name){
+return "AP";
+}
+
+return name
+.split(" ")
+.filter(Boolean)
+.slice(0,2)
+.map(word =>
+word.charAt(0)
+.toUpperCase()
+)
+.join("");
+
+}
+
+
+/* =========================================
+DOCUMENT ICON
+========================================= */
+
+function documentIcon(doc){
+
+const text =
+(
+doc.documentType ||
+doc.title ||
+""
+).toLowerCase();
+
+
+if(
+text.includes("photo")
+){
+return "📷";
+}
+
+if(
+text.includes("pan") ||
+text.includes("tax")
+){
+return "💳";
+}
+
+if(
+text.includes("address")
+){
+return "🏠";
+}
+
+if(
+text.includes("government") ||
+text.includes("identity") ||
+text.includes("id")
+){
+return "🪪";
+}
+
+return "📄";
+
+}
+
+
+/* =========================================
+UPDATE STATS
+========================================= */
+
+function updateStats(applications){
+
+let verified=0;
+let pending=0;
+let rejected=0;
+
+
+applications.forEach(app=>{
+
+const status =
+normalizeStatus(
+app.status
+);
+
+
+if(status==="verified"){
+verified++;
+}
+
+else if(status==="rejected"){
+rejected++;
+}
+
+else{
+pending++;
+}
+
+});
+
+
+document.getElementById(
+"totalApplications"
+).textContent =
+applications.length;
+
+
+document.getElementById(
+"verifiedApplications"
+).textContent =
+verified;
+
+
+document.getElementById(
+"pendingApplications"
+).textContent =
+pending;
+
+
+document.getElementById(
+"rejectedApplications"
+).textContent =
+rejected;
+
+}
+
+
+/* =========================================
+RENDER APPLICATIONS
+========================================= */
+
+function renderApplications(){
+
+let applications =
+getApplications();
+
+
+const search =
+document.getElementById(
+"searchInput"
+).value
+.trim()
+.toLowerCase();
+
+
+const filter =
+document.getElementById(
+"statusFilter"
+).value;
+
+
+applications =
+applications.filter(app=>{
+
+const text =
+[
+app.fullName,
+app.name,
+app.applicant?.fullName,
+app.applicant?.name,
+app.applicant?.firstName,
+app.applicant?.lastName,
+app.email,
+app.applicant?.email,
+app.mobile,
+app.phone,
+app.applicant?.mobile,
+app.applicant?.phone,
+app.applicationId,
+app.verificationId,
+app.city,
+app.occupation
+]
+.join(" ")
+.toLowerCase();
+
+
+const matchesSearch =
+!search ||
+text.includes(search);
+
+
+const matchesStatus =
+filter==="all" ||
+normalizeStatus(
+app.status
+)===filter;
+
+
+return matchesSearch &&
+matchesStatus;
+
+});
+
+window.renderedApplications = applications;
+
+
+const list =
+document.getElementById(
+"applicationList"
+);
+
+
+if(applications.length===0){
+
+list.innerHTML = `
+<div class="empty">
+
+<h2>
+No applications found
+</h2>
+
+<p>
+Submitted applications will appear here automatically.
+</p>
+
+</div>
+`;
+
+return;
+
+}
+
+
+list.innerHTML =
+applications.map(
+(app,index)=>
+createApplicationCard(
+app,index
+)
+).join("");
+
+}
+
+
+/* =========================================
+APPLICATION CARD
+========================================= */
+
+function createApplicationCard(app,index){
+
+const status =
+normalizeStatus(
+app.status
+);
+
+
+ const applicant =
+ app.applicant ||
+ {};
+
+
+ const name =
+ app.fullName ||
+ app.name ||
+ applicant.fullName ||
+ applicant.name ||
+ [applicant.firstName, applicant.lastName]
+ .filter(Boolean)
+ .join(" ") ||
+"Applicant";
+
+
+ const email =
+ app.email ||
+ applicant.email ||
+"—";
+
+
+ const mobile =
+ app.mobile ||
+ app.phone ||
+ applicant.mobile ||
+ applicant.phone ||
+"—";
+
+
+ const dob =
+ app.dateOfBirth ||
+ app.dob ||
+ applicant.dateOfBirth ||
+ applicant.dob ||
+"—";
+
+
+ const occupation =
+ app.occupation ||
+ applicant.occupation ||
+"—";
+
+
+ const city =
+ app.city ||
+ app.address ||
+ applicant.city ||
+ applicant.address ||
+"—";
+
+
+const docs =
+Array.isArray(app.documents)
+? app.documents
+: Array.isArray(app.uploadedDocuments)
+? app.uploadedDocuments
+: [];
+
+
+return `
+
+<article
+class="application-card"
+data-index="${index}">
+
+<div class="application-header">
+
+
+<div class="applicant-title">
+
+<div class="avatar">
+${escapeHTML(
+getInitials(name)
+)}
+</div>
+
+<div>
+
+<h2>
+${escapeHTML(name)}
+</h2>
+
+<div class="application-id">
+
+Application ID:
+${escapeHTML(
+app.applicationId ||
+"—"
+)}
+
+</div>
+
+</div>
+
+</div>
+
+
+<span
+class="status ${status}">
+
+●
+${status}
+
+</span>
+
+
+</div>
+
+
+<div class="details-grid">
+
+
+<div class="detail">
+<label>Full Name</label>
+<strong>
+${escapeHTML(name)}
+</strong>
+</div>
+
+
+<div class="detail">
+<label>Date of Birth</label>
+<strong>
+${escapeHTML(dob)}
+</strong>
+</div>
+
+
+<div class="detail">
+<label>Mobile</label>
+<strong>
+${escapeHTML(mobile)}
+</strong>
+</div>
+
+
+<div class="detail">
+<label>Email</label>
+<strong>
+${escapeHTML(email)}
+</strong>
+</div>
+
+
+<div class="detail">
+<label>Occupation</label>
+<strong>
+${escapeHTML(occupation)}
+</strong>
+</div>
+
+
+<div class="detail">
+<label>City</label>
+<strong>
+${escapeHTML(city)}
+</strong>
+</div>
+
+
+<div class="detail">
+<label>Application Date</label>
+<strong>
+${escapeHTML(
+ formatDate(
+ app.createdAt || app.submittedAt
+ )
+)}
+</strong>
+</div>
+
+
+<div class="detail">
+<label>Documents</label>
+<strong>
+${docs.length}
+Uploaded
+</strong>
+</div>
+
+
+<div class="detail">
+<label>Score</label>
+<strong>
+${app.score != null
+? escapeHTML(app.score)+"%"
+: "—"}
+</strong>
+</div>
+
+
+<div class="detail">
+<label>Verification</label>
+<strong>
+${escapeHTML(
+app.message ||
+"Automated verification"
+)}
+</strong>
+</div>
+
+
+</div>
+
+
+<div class="application-actions">
+
+
+<button
+class="btn btn-primary"
+onclick="toggleDocuments(${index})">
+
+📄 View Documents
+(${docs.length})
+
+</button>
+
+
+<button
+class="btn"
+onclick="showApplicant(${index})">
+
+👤 Full Details
+
+</button>
+
+
+<button
+class="btn btn-success"
+onclick="approveApplication(${index})">
+
+✓ Approve
+
+</button>
+
+
+<button
+class="btn btn-danger"
+onclick="rejectApplication(${index})">
+
+✕ Reject
+
+</button>
+
+
+<button
+class="btn"
+onclick="printApplication(${index})">
+
+🖨 Print
+
+</button>
+
+
+</div>
+
+
+<div
+id="documents-${index}"
+class="documents-preview">
+
+<h3>
+📁 Uploaded Documents
+</h3>
+
+${createDocuments(
+docs,
+index
+)}
+
+</div>
+
+
+</article>
+
+`;
+
+}
+
+
+/* =========================================
+DOCUMENTS
+========================================= */
+
+function createDocuments(docs,index){
+
+if(!docs.length){
+
+return `
+<div class="empty">
+No documents uploaded.
+</div>
+`;
+
+}
+
+
+return `
+<div class="document-grid">
+
+${docs.map(
+(doc,docIndex)=>{
+
+const status =
+normalizeStatus(
+doc.status || "verified"
+);
+
+
+return `
+
+<div class="document-card">
+
+
+<div class="document-info">
+
+<div class="file-icon">
+${documentIcon(doc)}
+</div>
+
+
+<div class="file-details">
+
+<strong>
+${escapeHTML(
+doc.title ||
+doc.documentType ||
+"Document"
+)}
+</strong>
+
+<small>
+📎
+${escapeHTML(
+doc.fileName ||
+"Uploaded file"
+)}
+</small>
+
+<small>
+${escapeHTML(
+doc.fileType ||
+"File"
+)}
+•
+${formatSize(
+doc.fileSize
+)}
+</small>
+
+</div>
+
+</div>
+
+
+<span
+class="doc-status ${status}">
+
+✓
+${status}
+
+</span>
+
+
+</div>
+
+`;
+
+}
+).join("")}
+
+</div>
+`;
+
+}
+
+
+/* =========================================
+TOGGLE DOCUMENTS
+========================================= */
+
+function toggleDocuments(index){
+
+const box =
+document.getElementById(
+"documents-"+index
+);
+
+if(box){
+
+box.classList.toggle("show");
+
+}
+
+
+function getActionApplication(index, applications){
+
+const visible =
+window.renderedApplications ||
+[];
+
+const target =
+visible[index];
+
+if(!target){
+return null;
+}
+
+return (applications || getApplications()).find(
+app => app.applicationId === target.applicationId
+) || target;
+
+}
+
+}
+
+
+/* =========================================
+APPLICANT DETAILS
+========================================= */
+
+function showApplicant(index){
+
+const applications =
+getApplications();
+
+const app =
+getActionApplication(index, applications);
+
+if(!app){
+return;
+}
+
+
+const applicant =
+app.applicant ||
+{};
+
+
+const name =
+app.fullName ||
+app.name ||
+applicant.fullName ||
+applicant.name ||
+[applicant.firstName, applicant.lastName]
+.filter(Boolean)
+.join(" ") ||
+"—";
+
+
+const docs =
+Array.isArray(app.documents)
+? app.documents
+: [];
+
+
+document.getElementById(
+"modalDetails"
+).innerHTML = `
+
+<div class="modal-detail">
+<label>Application ID</label>
+<strong>
+${escapeHTML(
+app.applicationId || "—"
+)}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>Full Name</label>
+<strong>
+${escapeHTML(name)}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>Date of Birth</label>
+<strong>
+${escapeHTML(
+app.dateOfBirth ||
+app.dob ||
+applicant.dateOfBirth ||
+applicant.dob ||
+"—"
+)}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>Mobile Number</label>
+<strong>
+${escapeHTML(
+app.mobile ||
+app.phone ||
+applicant.mobile ||
+applicant.phone ||
+"—"
+)}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>Email Address</label>
+<strong>
+${escapeHTML(
+app.email || applicant.email || "—"
+)}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>Occupation</label>
+<strong>
+${escapeHTML(
+app.occupation || applicant.occupation || "—"
+)}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>City</label>
+<strong>
+${escapeHTML(
+app.city ||
+app.address ||
+applicant.city ||
+applicant.address ||
+"—"
+)}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>Application Date</label>
+<strong>
+${escapeHTML(
+formatDate(app.createdAt || app.submittedAt)
+)}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>Status</label>
+<strong>
+${escapeHTML(
+app.status || "Pending"
+)}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>Score</label>
+<strong>
+${app.score != null
+? escapeHTML(app.score)+"%"
+: "—"}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>Total Documents</label>
+<strong>
+${docs.length}
+</strong>
+</div>
+
+<div class="modal-detail">
+<label>Message</label>
+<strong>
+${escapeHTML(
+app.message || "—"
+)}
+</strong>
+</div>
+
+`;
+
+
+document.getElementById(
+"applicantModal"
+).classList.add("active");
+
+}
+
+
+/* =========================================
+CLOSE MODAL
+========================================= */
+
+function closeModal(){
+
+document.getElementById(
+"applicantModal"
+).classList.remove("active");
+
+}
+
+
+window.addEventListener(
+"click",
+event=>{
+
+const modal =
+document.getElementById(
+"applicantModal"
+);
+
+if(event.target===modal){
+
+closeModal();
+
+}
+
+});
+
+
+/* =========================================
+APPROVE APPLICATION
+========================================= */
+
+function approveApplication(index){
+
+const applications =
+getApplications();
+
+const app =
+getActionApplication(index, applications);
+
+if(!app){
+return;
+}
+
+
+if(
+!confirm(
+"Are you sure you want to approve this application?"
+)
+){
+return;
+}
+
+
+app.status="verified";
+app.score=100;
+app.message=
+"Application approved by admin.";
+app.verifiedAt=
+new Date().toISOString();
+
+
+if(Array.isArray(app.documents)){
+
+app.documents =
+app.documents.map(doc=>({
+
+...doc,
+status:"Verified"
+
+}));
+
+}
+
+
+saveApplications(
+applications
+);
+
+
+localStorage.setItem(
+"verifyflowApplication",
+JSON.stringify(app)
+);
+
+
+renderApplications();
+
+alert(
+"Application approved successfully."
+);
+
+}
+
+
+/* =========================================
+REJECT APPLICATION
+========================================= */
+
+function rejectApplication(index){
+
+const remark =
+prompt(
+"Enter rejection reason:"
+);
+
+
+if(
+!remark ||
+!remark.trim()
+){
+return;
+}
+
+
+const applications =
+getApplications();
+
+const app =
+getActionApplication(index, applications);
+
+if(!app){
+return;
+}
+
+
+app.status="rejected";
+
+app.message=
+remark.trim();
+
+app.rejectedAt=
+new Date().toISOString();
+
+
+if(Array.isArray(app.documents)){
+
+app.documents =
+app.documents.map(doc=>({
+
+...doc,
+status:"Rejected"
+
+}));
+
+}
+
+
+saveApplications(
+applications
+);
+
+
+localStorage.setItem(
+"verifyflowApplication",
+JSON.stringify(app)
+);
+
+
+renderApplications();
+
+alert(
+"Application rejected."
+);
+
+}
+
+
+/* =========================================
+PRINT APPLICATION
+========================================= */
+
+function printApplication(index){
+
+const applications =
+getApplications();
+
+const app =
+getActionApplication(index, applications);
+
+if(!app){
+return;
+}
+
+
+const docs =
+Array.isArray(app.documents)
+? app.documents
+: [];
+
+
+const name =
+app.fullName ||
+app.name ||
+app.applicant?.fullName ||
+app.applicant?.name ||
+[app.applicant?.firstName, app.applicant?.lastName]
+.filter(Boolean)
+.join(" ") ||
+"Applicant";
+
+
+const printWindow =
+window.open(
+"",
+"_blank"
+);
+
+
+printWindow.document.write(`
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>
+VerifyFlow - Application
+</title>
+
+<style>
+
+body{
+font-family:Arial;
+padding:30px;
+color:#111;
+}
+
+h1{
+margin-bottom:5px;
+}
+
+h2{
+margin-top:30px;
+}
+
+.info{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.box{
+border:1px solid #ccc;
+padding:12px;
+border-radius:8px;
+}
+
+label{
+display:block;
+font-size:11px;
+color:#666;
+margin-bottom:4px;
+}
+
+strong{
+font-size:14px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:10px;
+text-align:left;
+font-size:13px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+VerifyFlow
+</h1>
+
+<h2>
+Application Details
+</h2>
+
+<div class="info">
+
+<div class="box">
+<label>Application ID</label>
+<strong>
+${escapeHTML(
+app.applicationId || "—"
+)}
+</strong>
+</div>
+
+<div class="box">
+<label>Status</label>
+<strong>
+${escapeHTML(
+app.status || "—"
+)}
+</strong>
+</div>
+
+<div class="box">
+<label>Full Name</label>
+<strong>
+${escapeHTML(name)}
+</strong>
+</div>
+
+<div class="box">
+<label>Date of Birth</label>
+<strong>
+${escapeHTML(
+app.dateOfBirth ||
+app.dob ||
+"—"
+)}
+</strong>
+</div>
+
+<div class="box">
+<label>Mobile</label>
+<strong>
+${escapeHTML(
+app.mobile ||
+app.phone ||
+"—"
+)}
+</strong>
+</div>
+
+<div class="box">
+<label>Email</label>
+<strong>
+${escapeHTML(
+app.email || "—"
+)}
+</strong>
+</div>
+
+<div class="box">
+<label>Occupation</label>
+<strong>
+${escapeHTML(
+app.occupation || "—"
+)}
+</strong>
+</div>
+
+<div class="box">
+<label>City</label>
+<strong>
+${escapeHTML(
+app.city || "—"
+)}
+</strong>
+</div>
+
+</div>
+
+
+<h2>
+Uploaded Documents
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+Document
+</th>
+
+<th>
+File Name
+</th>
+
+<th>
+Type
+</th>
+
+<th>
+Size
+</th>
+
+<th>
+Status
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+${docs.map(doc=>`
+
+<tr>
+
+<td>
+${escapeHTML(
+doc.title ||
+doc.documentType ||
+"Document"
+)}
+</td>
+
+<td>
+${escapeHTML(
+doc.fileName ||
+"—"
+)}
+</td>
+
+<td>
+${escapeHTML(
+doc.fileType ||
+"—"
+)}
+</td>
+
+<td>
+${formatSize(
+doc.fileSize
+)}
+</td>
+
+<td>
+${escapeHTML(
+doc.status ||
+"Verified"
+)}
+</td>
+
+</tr>
+
+`).join("")}
+
+</tbody>
+
+</table>
+
+
+<h2>
+Verification Information
+</h2>
+
+<div class="box">
+
+<label>Score</label>
+
+<strong>
+${app.score != null
+? escapeHTML(app.score)+"%"
+: "—"}
+</strong>
+
+<br><br>
+
+<label>Message</label>
+
+<strong>
+${escapeHTML(
+app.message || "—"
+)}
+</strong>
+
+<br><br>
+
+<label>Submitted</label>
+
+<strong>
+${escapeHTML(
+formatDate(app.createdAt || app.submittedAt)
+)}
+</strong>
+
+</div>
+
+
+<script>
+
+window.onload=function(){
+
+window.print();
+
+}
+
+<\/script>
+
+</body>
+
+</html>
+
+`);
+
+
+printWindow.document.close();
+
+}
+
+
+/* =========================================
+CLEAR SEARCH
+========================================= */
+
+function clearSearch(){
+
+document.getElementById(
+"searchInput"
+).value="";
+
+document.getElementById(
+"statusFilter"
+).value="all";
+
+renderApplications();
+
+}
+
+
+/* =========================================
+SEARCH ENTER
+========================================= */
+
+document.getElementById(
+"searchInput"
+).addEventListener(
+"keydown",
+event=>{
+
+if(event.key==="Enter"){
+
+renderApplications();
+
+}
+
+});
+
+
+/* =========================================
+LOAD
+========================================= */
+
+renderApplications();
+
+</script>
+
+</body>
+
+</html>
+```

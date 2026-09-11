@@ -1,0 +1,1333 @@
+```html
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1">
+
+    <title>Document Verification | DocuShieldAI</title>
+
+    <link
+        rel="stylesheet"
+        href="css/applicant.css">
+
+    <style>
+
+        :root {
+            --bg: #08111f;
+            --panel: rgba(16, 31, 52, 0.94);
+            --panel-soft: rgba(12, 23, 38, 0.92);
+            --line: rgba(159, 190, 225, 0.2);
+            --text: #f4f8ff;
+            --muted: #9aacc2;
+            --cyan: #52e5e8;
+            --green: #48e08b;
+            --red: #ff7c91;
+            --amber: #ffc857;
+            --shadow: 0 24px 80px rgba(0,0,0,.28);
+        }
+
+
+        :root[data-theme="light"] {
+            --bg: #edf4ff;
+            --panel: rgba(255, 255, 255, 0.94);
+            --panel-soft: rgba(241, 246, 255, 0.96);
+            --line: rgba(24, 53, 94, 0.14);
+            --text: #091827;
+            --muted: #4f6482;
+            --cyan: #087d7d;
+            --green: #1a9d69;
+            --red: #d5495d;
+            --amber: #ba7a08;
+            --shadow: 0 20px 60px rgba(15,31,50,.12);
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+
+        .container {
+            width: min(1100px, calc(100% - 40px));
+            margin: 30px auto 70px;
+        }
+
+
+        /* TOPBAR */
+
+        .topbar {
+            background: var(--panel);
+            border-bottom: 1px solid var(--line);
+            color: var(--text);
+        }
+
+
+        .topbar-inner {
+            width: min(1100px, calc(100% - 40px));
+            margin: auto;
+            min-height: 76px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+
+        .theme-toggle {
+            padding: 10px 14px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--panel-soft);
+            color: var(--text);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+
+        .logo span {
+            color: var(--cyan);
+        }
+
+
+        .back {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: rgba(12,23,38,.8);
+            color: var(--text);
+            text-decoration: none;
+        }
+
+
+        /* PROGRESS */
+
+        .progress {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+
+        .step {
+            padding: 13px;
+            text-align: center;
+
+            border: 1px solid var(--line);
+            border-radius: 12px;
+
+            background: var(--panel-soft);
+            color: var(--muted);
+
+            font-weight: 700;
+        }
+
+
+        .step.active {
+            color: var(--text);
+
+            border-color: rgba(82,229,232,.45);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(82,229,232,.16),
+                    rgba(87,135,255,.16)
+                );
+        }
+
+
+        .step.done {
+            color: var(--green);
+            border-color: rgba(72,224,139,.35);
+        }
+
+
+        /* MAIN PANEL */
+
+        .verification-panel {
+            padding: 30px;
+
+            border: 1px solid var(--line);
+            border-radius: 24px;
+
+            background: var(--panel);
+
+            box-shadow: var(--shadow);
+        }
+
+
+        .verification-header {
+            text-align: center;
+            padding: 10px 0 25px;
+        }
+
+
+        .verification-icon {
+            width: 80px;
+            height: 80px;
+
+            margin: 0 auto 18px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 22px;
+
+            color: var(--cyan);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(82,229,232,.15),
+                    rgba(87,135,255,.18)
+                );
+
+            border: 1px solid rgba(82,229,232,.3);
+
+            font-size: 2rem;
+        }
+
+
+        .verification-header h1 {
+            margin: 0 0 10px;
+            font-size: clamp(1.8rem,4vw,2.8rem);
+        }
+
+
+        .verification-header p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+
+        /* APPLICATION ID */
+
+        .application-id {
+            margin: 20px auto;
+            width: fit-content;
+
+            padding: 10px 16px;
+
+            border-radius: 999px;
+
+            background: rgba(82,229,232,.08);
+
+            border: 1px solid rgba(82,229,232,.22);
+
+            color: var(--cyan);
+
+            font-weight: 700;
+        }
+
+
+        /* PROGRESS BAR */
+
+        .progress-wrapper {
+            margin: 15px 0 30px;
+        }
+
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 9px;
+
+            color: var(--muted);
+            font-size: .9rem;
+        }
+
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+
+            overflow: hidden;
+
+            border-radius: 999px;
+
+            background: rgba(255,255,255,.08);
+        }
+
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+
+            border-radius: inherit;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--cyan),
+                    #8ea7ff
+                );
+
+            transition: width .5s ease;
+        }
+
+
+        /* DOCUMENT LIST */
+
+        .documents {
+            display: grid;
+            gap: 12px;
+        }
+
+
+        .document-card {
+            display: grid;
+
+            grid-template-columns: 52px 1fr auto;
+
+            align-items: center;
+
+            gap: 15px;
+
+            padding: 17px;
+
+            border: 1px solid var(--line);
+            border-radius: 16px;
+
+            background: var(--panel-soft);
+
+            transition:
+                border-color .3s ease,
+                transform .3s ease,
+                background .3s ease;
+        }
+
+
+        .document-card.checking {
+            border-color: rgba(82,229,232,.35);
+        }
+
+
+        .document-card.verified {
+            border-color: rgba(72,224,139,.35);
+
+            background:
+                rgba(72,224,139,.05);
+        }
+
+
+        .document-icon {
+            width: 52px;
+            height: 52px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 14px;
+
+            background:
+                rgba(82,229,232,.1);
+
+            border: 1px solid rgba(82,229,232,.2);
+
+            color: var(--cyan);
+
+            font-weight: 800;
+            font-size: .8rem;
+        }
+
+
+        .document-info strong {
+            display: block;
+
+            margin-bottom: 5px;
+
+            font-size: .98rem;
+        }
+
+
+        .document-info small {
+            color: var(--muted);
+
+            word-break: break-word;
+        }
+
+
+        .document-status {
+            min-width: 105px;
+
+            padding: 8px 12px;
+
+            text-align: center;
+
+            border-radius: 999px;
+
+            font-size: .75rem;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+        }
+
+
+        .status-checking {
+            color: var(--cyan);
+
+            background: rgba(82,229,232,.08);
+
+            border: 1px solid rgba(82,229,232,.2);
+        }
+
+
+        .status-verified {
+            color: var(--green);
+
+            background: rgba(72,224,139,.08);
+
+            border: 1px solid rgba(72,224,139,.22);
+        }
+
+
+        /* SPINNER */
+
+        .spinner {
+            width: 14px;
+            height: 14px;
+
+            display: inline-block;
+
+            margin-right: 5px;
+
+            vertical-align: -2px;
+
+            border: 2px solid rgba(82,229,232,.25);
+
+            border-top-color: var(--cyan);
+
+            border-radius: 50%;
+
+            animation: spin .8s linear infinite;
+        }
+
+
+        @keyframes spin {
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+
+        /* COMPLETE */
+
+        .complete-message {
+            display: none;
+
+            margin-top: 25px;
+
+            padding: 18px;
+
+            text-align: center;
+
+            border-radius: 16px;
+
+            color: var(--green);
+
+            background: rgba(72,224,139,.07);
+
+            border: 1px solid rgba(72,224,139,.25);
+        }
+
+
+        .complete-message.show {
+            display: block;
+        }
+
+
+        /* MOBILE */
+
+        @media(max-width:700px) {
+
+            .container {
+                width: min(100% - 20px,1100px);
+            }
+
+
+            .progress {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+
+            .verification-panel {
+                padding: 20px;
+            }
+
+
+            .document-card {
+                grid-template-columns: 45px 1fr;
+            }
+
+
+            .document-status {
+                grid-column: 2;
+                width: fit-content;
+            }
+
+
+            .topbar-inner {
+                width: min(100% - 20px,1100px);
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="topbar">
+
+    <div class="topbar-inner">
+
+        <div class="logo">
+            <span>D</span>ocu
+            <span>S</span>hield
+            <span>A</span>i
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;">
+            <button
+                id="themeToggle"
+                class="theme-toggle"
+                type="button"
+                aria-label="Toggle theme"
+                aria-pressed="false">
+                🌙 Dark
+            </button>
+
+            <a
+                href="applicant.html"
+                class="back">
+                ← Home
+            </a>
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<main class="container">
+
+
+    <!-- STEPS -->
+
+    <div class="progress">
+
+        <div class="step done">
+            ✓ 1. Applicant Details
+        </div>
+
+        <div class="step done">
+            ✓ 2. Documents
+        </div>
+
+        <div class="step active">
+            3. Verification
+        </div>
+
+        <div class="step">
+            4. Result
+        </div>
+
+    </div>
+
+
+
+    <!-- VERIFICATION -->
+
+    <section class="verification-panel">
+
+
+        <div class="verification-header">
+
+
+            <div
+                id="verification-icon"
+                class="verification-icon">
+
+                🔍
+
+            </div>
+
+
+            <h1 id="verification-title">
+                Verifying your documents
+            </h1>
+
+
+            <p id="verification-message">
+                Please wait while our verification system checks your documents.
+            </p>
+
+
+            <div
+                id="application-id"
+                class="application-id">
+
+                Application ID: Loading...
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- PROGRESS -->
+
+        <div class="progress-wrapper">
+
+            <div class="progress-info">
+
+                <span id="progress-text">
+                    Starting verification...
+                </span>
+
+                <strong id="progress-percent">
+                    0%
+                </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+                <div
+                    id="progress-fill"
+                    class="progress-fill">
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DOCUMENTS -->
+
+        <div
+            id="documents"
+            class="documents">
+        </div>
+
+
+
+        <!-- COMPLETE -->
+
+        <div
+            id="complete-message"
+            class="complete-message">
+
+            ✓ All documents have been successfully verified.
+            <br><br>
+
+            Redirecting to your verification result...
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+
+<script>
+
+    const themeToggle =
+        document.getElementById("themeToggle");
+
+
+    function applyTheme(themeName) {
+
+        const normalizedTheme =
+            themeName === "light" ? "light" : "dark";
+
+        document.documentElement.setAttribute(
+            "data-theme",
+            normalizedTheme
+        );
+
+        themeToggle.textContent =
+            normalizedTheme === "dark"
+                ? "🌙 Dark"
+                : "☀️ Light";
+
+        themeToggle.setAttribute(
+            "aria-pressed",
+            normalizedTheme === "light" ? "true" : "false"
+        );
+
+        localStorage.setItem(
+            "docushield-theme",
+            normalizedTheme
+        );
+    }
+
+
+    applyTheme(
+        localStorage.getItem("docushield-theme") || "dark"
+    );
+
+
+    themeToggle.addEventListener(
+        "click",
+        () => {
+            const current =
+                document.documentElement.getAttribute("data-theme");
+
+            applyTheme(
+                current === "dark" ? "light" : "dark"
+            );
+        }
+    );
+
+    /* ==========================================
+       APPLICATION DATA
+       ========================================== */
+
+
+    const application =
+        JSON.parse(
+            localStorage.getItem(
+                "verifyflowApplication"
+            ) || "null"
+        );
+
+
+    const applicationId =
+        new URLSearchParams(
+            window.location.search
+        ).get("applicationId")
+        ||
+        localStorage.getItem(
+            "verifyflowApplicationId"
+        );
+
+
+    /* ==========================================
+       ELEMENTS
+       ========================================== */
+
+
+    const documentsContainer =
+        document.getElementById(
+            "documents"
+        );
+
+
+    const progressFill =
+        document.getElementById(
+            "progress-fill"
+        );
+
+
+    const progressPercent =
+        document.getElementById(
+            "progress-percent"
+        );
+
+
+    const progressText =
+        document.getElementById(
+            "progress-text"
+        );
+
+
+    const title =
+        document.getElementById(
+            "verification-title"
+        );
+
+
+    const message =
+        document.getElementById(
+            "verification-message"
+        );
+
+
+    const icon =
+        document.getElementById(
+            "verification-icon"
+        );
+
+
+    const completeMessage =
+        document.getElementById(
+            "complete-message"
+        );
+
+
+    /* ==========================================
+       APPLICATION ID
+       ========================================== */
+
+
+    document.getElementById(
+        "application-id"
+    ).textContent =
+        "Application ID: " +
+        (applicationId || "VF-" + Date.now());
+
+
+
+    /* ==========================================
+       DOCUMENT DATA
+       ========================================== */
+
+
+    let documents = [];
+
+
+    if (
+        application &&
+        Array.isArray(application.documents) &&
+        application.documents.length
+    ) {
+
+        documents =
+            application.documents;
+
+    }
+
+
+    /*
+     * If documents are not found,
+     * create simple fallback documents.
+     */
+
+    if (!documents.length) {
+
+        documents = [
+
+            {
+                documentType:
+                    "Government identity proof",
+
+                fileName:
+                    "Government ID",
+
+                status:
+                    "Verified"
+            },
+
+            {
+                documentType:
+                    "Address proof",
+
+                fileName:
+                    "Address Proof",
+
+                status:
+                    "Verified"
+            },
+
+            {
+                documentType:
+                    "PAN / tax identity",
+
+                fileName:
+                    "PAN Card",
+
+                status:
+                    "Verified"
+            },
+
+            {
+                documentType:
+                    "Applicant photograph",
+
+                fileName:
+                    "Applicant Photo",
+
+                status:
+                    "Verified"
+            },
+
+            {
+                documentType:
+                    "Supporting document",
+
+                fileName:
+                    "Supporting Document",
+
+                status:
+                    "Verified"
+            }
+
+        ];
+
+    }
+
+
+    /* ==========================================
+       CREATE DOCUMENT CARDS
+       ========================================== */
+
+
+    function getIcon(type) {
+
+        const value =
+            String(type).toLowerCase();
+
+
+        if (value.includes("pan")) {
+            return "PAN";
+        }
+
+        if (value.includes("photo")) {
+            return "PH";
+        }
+
+        if (value.includes("address")) {
+            return "AD";
+        }
+
+        if (value.includes("identity")) {
+            return "ID";
+        }
+
+        return "DOC";
+
+    }
+
+
+
+    function createDocumentCards() {
+
+        documentsContainer.innerHTML = "";
+
+
+        documents.forEach(
+            (documentData, index) => {
+
+                const title =
+                    documentData.documentType ||
+                    documentData.title ||
+                    "Document " + (index + 1);
+
+
+                const fileName =
+                    documentData.fileName ||
+                    "Uploaded document";
+
+
+                const element =
+                    document.createElement(
+                        "article"
+                    );
+
+
+                element.className =
+                    "document-card";
+
+
+                element.dataset.index =
+                    index;
+
+
+                element.innerHTML = `
+
+                    <div class="document-icon">
+
+                        ${getIcon(title)}
+
+                    </div>
+
+
+                    <div class="document-info">
+
+                        <strong>
+                            ${escapeHTML(title)}
+                        </strong>
+
+                        <small>
+                            ${escapeHTML(fileName)}
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        class="document-status status-checking">
+
+                        <span class="spinner"></span>
+                        Checking
+
+                    </div>
+
+                `;
+
+
+                documentsContainer.appendChild(
+                    element
+                );
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       HTML SECURITY
+       ========================================== */
+
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replace(/&/g,"&amp;")
+            .replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;")
+            .replace(/"/g,"&quot;")
+            .replace(/'/g,"&#039;");
+
+    }
+
+
+    /* ==========================================
+       UPDATE PROGRESS
+       ========================================== */
+
+
+    function updateProgress(
+        current,
+        total
+    ) {
+
+        const percent =
+            Math.round(
+                (current / total) * 100
+            );
+
+
+        progressFill.style.width =
+            percent + "%";
+
+
+        progressPercent.textContent =
+            percent + "%";
+
+
+        progressText.textContent =
+            current === total
+            ? "Verification completed"
+            : "Verifying document " +
+              current +
+              " of " +
+              total;
+
+    }
+
+
+    /* ==========================================
+       VERIFY SINGLE DOCUMENT
+       ========================================== */
+
+
+    function verifyDocument(
+        index
+    ) {
+
+        return new Promise(
+            resolve => {
+
+                const cards =
+                    document.querySelectorAll(
+                        ".document-card"
+                    );
+
+
+                const card =
+                    cards[index];
+
+
+                if (!card) {
+
+                    resolve();
+
+                    return;
+
+                }
+
+
+                const status =
+                    card.querySelector(
+                        ".document-status"
+                    );
+
+
+                card.classList.add(
+                    "checking"
+                );
+
+
+                status.className =
+                    "document-status status-checking";
+
+
+                status.innerHTML = `
+                    <span class="spinner"></span>
+                    Checking
+                `;
+
+
+                /*
+                 * Simulate automatic
+                 * document verification.
+                 */
+
+                setTimeout(
+                    () => {
+
+                        card.classList.remove(
+                            "checking"
+                        );
+
+
+                        card.classList.add(
+                            "verified"
+                        );
+
+
+                        status.className =
+                            "document-status status-verified";
+
+
+                        status.innerHTML =
+                            "✓ Verified";
+
+
+                        documents[index].status =
+                            "Verified";
+
+
+                        resolve();
+
+                    },
+                    900
+                );
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       START VERIFICATION
+       ========================================== */
+
+
+    async function startVerification() {
+
+        createDocumentCards();
+
+
+        const total =
+            documents.length;
+
+
+        progressFill.style.width =
+            "0%";
+
+
+        progressPercent.textContent =
+            "0%";
+
+
+        title.textContent =
+            "Verifying your documents";
+
+
+        message.textContent =
+            "Our verification system is checking each uploaded document.";
+
+
+        /*
+         * Verify documents one by one.
+         */
+
+        for (
+            let i = 0;
+            i < total;
+            i++
+        ) {
+
+            await verifyDocument(i);
+
+            updateProgress(
+                i + 1,
+                total
+            );
+
+        }
+
+
+        /* ======================================
+           ALL VERIFIED
+           ====================================== */
+
+
+        title.textContent = 'Documents are being verified automatically';
+
+
+        message.textContent =
+            "All uploaded documents have been successfully verified.";
+
+
+        icon.textContent =
+            "✓";
+
+
+        icon.style.color =
+            "var(--green)";
+
+
+        icon.style.borderColor =
+            "rgba(72,224,139,.35)";
+
+
+        completeMessage.classList.add(
+            "show"
+        );
+
+
+        /*
+         * Update application status.
+         */
+
+        if (application) {
+
+            application.status =
+                "verified";
+
+
+            application.score =
+                100;
+
+
+            application.message =
+                "All uploaded documents were successfully verified.";
+
+
+            application.verifiedAt =
+                new Date().toISOString();
+
+
+            application.documents =
+                documents;
+
+
+            localStorage.setItem(
+                "verifyflowApplication",
+                JSON.stringify(
+                    application
+                )
+            );
+
+        }
+
+
+        localStorage.setItem(
+            "verifyflowStatus",
+            "verified"
+        );
+
+        title.textContent = application?.status === 'verified'
+            ? 'Verification complete'
+            : application?.status === 'failed'
+            ? 'Verification failed'
+            : 'Manual review required';
+
+
+        localStorage.setItem(
+            "verifyflowScore",
+            "100"
+        );
+
+
+        /*
+         * Move to result page.
+         */
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "result.html?applicationId=" +
+                    encodeURIComponent(
+                        applicationId
+                    );
+
+            },
+            1800
+        );
+
+    }
+
+
+    /* ==========================================
+       START
+       ========================================== */
+
+
+    if (!applicationId) {
+
+        title.textContent =
+            "No application found";
+
+
+        message.textContent =
+            "Please go back and submit your documents first.";
+
+
+        icon.textContent =
+            "!";
+
+
+    } else {
+
+        startVerification();
+
+    }
+
+</script>
+
+
+</body>
+
+</html>
+```

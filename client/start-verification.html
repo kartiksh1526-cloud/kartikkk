@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Start verification | DocuShieldAI</title>
+  <link rel="stylesheet" href="css/applicant.css">
+  <style>
+    .start-page{min-height:100vh;overflow:hidden}
+    .start-main{width:min(1240px,calc(100% - 40px));min-height:calc(100vh - 120px);margin:0 auto;display:grid;place-items:center;padding:44px 0 70px}
+    .start-layout{display:grid;grid-template-columns:minmax(0,.9fr) minmax(420px,1.1fr);align-items:center;gap:30px;width:100%}
+    .start-copy{position:relative;z-index:2}
+    .start-copy h1{max-width:650px;margin:18px 0 18px;font-family:'Space Grotesk','Manrope',sans-serif;font-size:clamp(2.8rem,6vw,6rem);line-height:.96;letter-spacing:-.06em}
+    .start-copy h1 em{color:var(--cyan);font-style:normal}
+    .start-copy p{max-width:560px;margin:0;color:var(--muted);font-size:1.04rem}
+    .start-actions{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+    .start-actions .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border:1px solid var(--line);border-radius:12px;background:var(--button-bg);color:var(--text);font-weight:800;text-decoration:none;transition:.2s}
+    .start-actions .btn:hover{transform:translateY(-2px);border-color:rgba(82,229,232,.55)}
+    .start-actions .btn-primary{border-color:transparent;background:linear-gradient(135deg,var(--cyan),#7ae7d9 55%,#8ea7ff);color:#06131e}
+    .start-note{margin-top:20px!important;color:var(--muted);font-size:.78rem!important}
+    .scene-wrap{position:relative;min-height:560px;perspective:1100px}
+    .scene-wrap:before{content:'LIVE VERIFICATION SIGNAL';position:absolute;top:12%;left:11%;z-index:2;color:var(--muted);font:500 11px 'DM Mono',monospace;letter-spacing:.12em}
+    .scene{position:absolute;inset:8% 3%;transform-style:preserve-3d;animation:sceneFloat 7s ease-in-out infinite}
+    .orbit{position:absolute;inset:15% 5%;border:1px solid rgba(82,229,232,.3);border-radius:50%;transform:rotateX(67deg) rotateZ(-18deg);box-shadow:0 0 35px rgba(82,229,232,.08);animation:orbitSpin 12s linear infinite}
+    .orbit.second{inset:22% 15%;border-color:rgba(156,124,255,.35);transform:rotateY(66deg) rotateZ(20deg);animation-duration:16s;animation-direction:reverse}
+    .orbit:after{content:'';position:absolute;top:3%;left:15%;width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px 5px rgba(82,229,232,.7)}
+    .verification-card{position:absolute;top:27%;left:22%;width:56%;aspect-ratio:1.55;border:1px solid rgba(82,229,232,.55);border-radius:22px;background:linear-gradient(145deg,rgba(28,61,93,.92),rgba(8,20,36,.96));box-shadow:25px 30px 80px rgba(0,0,0,.35),inset 0 0 35px rgba(82,229,232,.08);transform:rotateX(8deg) rotateY(-18deg) rotateZ(3deg);transform-style:preserve-3d;animation:cardDrift 5s ease-in-out infinite}
+    :root[data-theme="light"] .verification-card{background:linear-gradient(145deg,rgba(255,255,255,.95),rgba(218,233,250,.95));box-shadow:25px 30px 70px rgba(40,74,110,.18),inset 0 0 35px rgba(82,150,180,.1)}
+    .verification-card:before{content:'';position:absolute;inset:12px;border:1px solid rgba(159,190,225,.16);border-radius:15px;transform:translateZ(8px)}
+    .card-top{position:absolute;top:20px;left:24px;right:24px;display:flex;justify-content:space-between;color:var(--muted);font:500 10px 'DM Mono',monospace;letter-spacing:.1em;transform:translateZ(16px)}
+    .card-shield{position:absolute;top:30%;left:12%;width:62px;height:72px;border:2px solid var(--cyan);clip-path:polygon(50% 0,92% 15%,86% 62%,50% 100%,14% 62%,8% 15%);color:var(--cyan);filter:drop-shadow(0 0 10px rgba(82,229,232,.45));transform:translateZ(20px);animation:shieldPulse 2.5s ease-in-out infinite}
+    .card-shield:after{content:'✓';position:absolute;inset:0;display:grid;place-items:center;font-size:25px;font-weight:800}
+    .card-lines{position:absolute;right:12%;bottom:25%;width:42%;display:grid;gap:9px;transform:translateZ(18px)}.card-lines i{display:block;height:5px;border-radius:8px;background:rgba(159,190,225,.35)}.card-lines i:nth-child(2){width:75%}.card-lines i:nth-child(3){width:52%}
+    .scan-line{position:absolute;left:9%;right:9%;top:18%;height:2px;background:var(--cyan);box-shadow:0 0 14px 3px rgba(82,229,232,.7);transform:translateZ(22px);animation:scan 3.6s ease-in-out infinite}
+    .signal{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px 3px rgba(82,229,232,.8);animation:signalFloat 4s ease-in-out infinite}.signal.one{top:20%;right:16%}.signal.two{bottom:21%;left:12%;animation-delay:1.2s;background:var(--violet)}.signal.three{top:42%;right:4%;animation-delay:2s;background:var(--amber)}
+    .scene-label{position:absolute;right:5%;bottom:16%;padding:13px 15px;border:1px solid var(--line);border-radius:13px;background:var(--panel);box-shadow:var(--shadow);transform:translateZ(30px);animation:labelFloat 5s ease-in-out infinite}.scene-label strong{display:block;color:var(--text);font-size:.83rem}.scene-label small{display:block;margin-top:3px;color:var(--muted);font-size:.7rem}
+    @keyframes sceneFloat{50%{transform:translateY(-10px) rotateX(2deg)}}@keyframes orbitSpin{to{transform:rotateX(67deg) rotateZ(342deg)}}@keyframes cardDrift{50%{transform:rotateX(3deg) rotateY(-11deg) rotateZ(1deg) translateY(-8px)}}@keyframes scan{0%,100%{top:18%;opacity:.3}50%{top:78%;opacity:1}}@keyframes shieldPulse{50%{filter:drop-shadow(0 0 20px rgba(82,229,232,.8));transform:translateZ(25px) scale(1.04)}}@keyframes signalFloat{50%{transform:translate3d(15px,-24px,30px);opacity:.45}}@keyframes labelFloat{50%{transform:translateZ(30px) translateY(-9px)}}
+    @media(max-width:900px){.start-layout{grid-template-columns:1fr}.scene-wrap{min-height:470px;order:-1}.start-copy{text-align:center}.start-copy p{margin:0 auto}.start-actions{justify-content:center}.start-note{text-align:center}}
+    @media(max-width:560px){.start-main{width:min(100% - 20px,1240px);padding-top:22px}.scene-wrap{min-height:360px}.scene-wrap:before{top:7%;left:4%;font-size:9px}.verification-card{left:14%;width:72%}.scene-label{right:0;bottom:11%}.start-copy h1{font-size:clamp(2.7rem,14vw,4.2rem)}}
+    @media(prefers-reduced-motion:reduce){.scene,.orbit,.verification-card,.scan-line,.card-shield,.signal,.scene-label{animation:none}}
+  </style>
+</head>
+<body class="start-page">
+  <header class="topbar">
+    <div class="logo"><span>D</span>ocu<span>S</span>hield<span>A</span>i</div>
+    <div style="display:flex;align-items:center;gap:12px;"><button id="themeToggle" type="button" class="back" aria-label="Toggle theme" style="padding:10px 14px;">🌙 Dark</button><a href="index.html" class="back">← Back to Home</a></div>
+  </header>
+  <main class="start-main">
+    <div class="start-layout">
+      <section class="start-copy"><div class="eyebrow mono">SECURE IDENTITY WORKFLOW</div><h1>Ready to start your <em>verification?</em></h1><p>We will collect your applicant details, required documents, and a live photo before sending everything through the verification workflow.</p><div class="start-actions"><a href="applicant.html" class="btn btn-primary">Start verification <span aria-hidden="true">↗</span></a><a href="index.html" class="btn">Maybe later</a></div><p class="start-note">Your information stays inside the secure verification workflow.</p></section>
+      <section class="scene-wrap" aria-label="Animated verification visualization"><div class="scene"><div class="orbit"></div><div class="orbit second"></div><div class="verification-card"><div class="card-top"><span>DOCUSHIELD AI</span><span>LIVE SIGNAL</span></div><div class="scan-line"></div><div class="card-shield"></div><div class="card-lines"><i></i><i></i><i></i></div></div><span class="signal one"></span><span class="signal two"></span><span class="signal three"></span><div class="scene-label"><strong>Identity signal ready</strong><small>Secure workflow standing by</small></div></div></section>
+    </div>
+  </main>
+  <script>
+    const themeToggle=document.getElementById('themeToggle');
+    function applyTheme(themeName){document.documentElement.setAttribute('data-theme',themeName);themeToggle.textContent=themeName==='dark'?'🌙 Dark':'☀️ Light';localStorage.setItem('docushield-theme',themeName)}
+    applyTheme(localStorage.getItem('docushield-theme')||'dark');
+    themeToggle.addEventListener('click',()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+  </script>
+</body>
+</html>
